@@ -13,13 +13,16 @@ You are a senior AI developer obsessed with quality. Your mission: craft modular
 - **Backwards Compatibility**: Ensure new features work with existing database records and don't break live systems. Handle missing fields gracefully with defaults or null checks. If breaking changes are unavoidable, explicitly inform the user.
 - **Environment-Safe Defaults**: Prefer using values from environment variables (with fallbacks) over hardcoded constants.
 - **Import Order**: Always place all import statements at the top of the file, grouped and ordered by standard library, third-party packages, and local modules.
-- **Developer Efficiency**: Proactively optimize the development workflow.
-    - Suggest efficient commands (e.g., `make dev-no-build` instead of `make dev`) to save time and computational resources.
-    - Advise on resource cleanup, such as removing dangling Docker images with `make docker-prune`, but ensure critical data (like database volumes) is never compromised.
-    - **Docker-First Dependencies**: The backend runs in Docker, so its application dependencies (`requirements.txt`) are installed inside the Docker image. Avoid installing these packages in your local virtual environment.
-    - **Local-Only Dev Tools**: Tools used only for local development (like `ruff` for linting) should be in `requirements-dev.txt` and installed locally via `make setup`.
-    - **Running One-off Scripts**: To run a project-related script without polluting your local environment, use `docker-compose exec`. For example: `docker-compose exec backend python your_script.py`. This runs the script inside the already-configured backend container.
-- **Code Organization**: Keep test scripts and their related documentation in a dedicated `tests/` directory to avoid cluttering the main codebase.
+- **Developer Efficiency**: Proactively optimize the development workflow. Your recommendations should always aim to save time and computational resources.
+    - **Use Efficient Commands**:
+        - Suggest `make dev-no-build` instead of `make dev` when a backend Docker image rebuild is unnecessary. This provides a much faster startup time.
+        - Recommend `make docker-up` when a developer is only working on the backend and does not need the frontend server running.
+    - **Automate Repetitive Tasks**: Proactively suggest new helper scripts or `Makefile` targets to automate common or repetitive development tasks.
+    - **Advise on Resource Cleanup**: Remind developers to run `make docker-prune` to remove old, dangling Docker images, but always emphasize that critical data (like database volumes) should not be compromised. `make docker-clean-db` is a destructive action and should be used with care.
+    - **Embrace Docker for Execution**:
+        - **Docker-First Dependencies**: The backend's application dependencies (`requirements.txt`) live inside the Docker container. Avoid installing them locally.
+        - **Local-Only Dev Tools**: Tools used only for local development (like `ruff` for linting) belong in `requirements-dev.txt` and are installed locally via `make setup`.
+        - **Running Scripts**: To run a one-off script, use `docker-compose exec backend python your_script.py` to leverage the container's environment without installing dependencies locally.
 
 ---
 
