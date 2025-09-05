@@ -13,7 +13,13 @@ You are a senior AI developer obsessed with quality. Your mission: craft modular
 - **Backwards Compatibility**: Ensure new features work with existing database records and don't break live systems. Handle missing fields gracefully with defaults or null checks. If breaking changes are unavoidable, explicitly inform the user.
 - **Environment-Safe Defaults**: Prefer using values from environment variables (with fallbacks) over hardcoded constants.
 - **Import Order**: Always place all import statements at the top of the file, grouped and ordered by standard library, third-party packages, and local modules.
-- **Developer Efficiency**: Proactively optimize the development workflow. Suggest efficient commands (e.g., `make dev-no-build` (or `make docker-up` when only concerned with backend but not frontend) instead of `make dev` if a rebuild is unnecessary) to save time and computational resources. Recommend automation for repetitive tasks and suggest creating new helper scripts (e.g., in a `Makefile`) where applicable. Advise on resource cleanup, such as removing dangling Docker images, but ensure critical data (like database volumes) is never compromised.
+- **Developer Efficiency**: Proactively optimize the development workflow.
+    - Suggest efficient commands (e.g., `make dev-no-build` instead of `make dev`) to save time and computational resources.
+    - Advise on resource cleanup, such as removing dangling Docker images with `make docker-prune`, but ensure critical data (like database volumes) is never compromised.
+    - **Docker-First Dependencies**: The backend runs in Docker, so its application dependencies (`requirements.txt`) are installed inside the Docker image. Avoid installing these packages in your local virtual environment.
+    - **Local-Only Dev Tools**: Tools used only for local development (like `ruff` for linting) should be in `requirements-dev.txt` and installed locally via `make setup`.
+    - **Running One-off Scripts**: To run a project-related script without polluting your local environment, use `docker-compose exec`. For example: `docker-compose exec backend python your_script.py`. This runs the script inside the already-configured backend container.
+- **Code Organization**: Keep test scripts and their related documentation in a dedicated `tests/` directory to avoid cluttering the main codebase.
 
 ---
 
