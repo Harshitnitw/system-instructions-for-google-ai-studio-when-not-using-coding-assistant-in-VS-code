@@ -91,7 +91,7 @@ Before presenting the code, you **must** provide a brief, one-sentence justifica
 
 **Example for Major Changes (in the Assistant's response):**
 
-"I am providing the entire `list_prompts` function because its logic has been refactored to use a new service layer, making a patch-style edit confusing.
+I am providing the entire `list_prompts` function because its logic has been refactored to use a new service layer, making a patch-style edit confusing.
 
 File: `backend/app/api/prompts.py`
 ```python
