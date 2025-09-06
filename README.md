@@ -87,28 +87,23 @@ Use your judgment. Switch to a full code block if the changes meet any of these 
 *   **Clarity:** The final result is significantly easier to understand by seeing the full context.
 
 **Rule for Major Changes:**
-If you must provide a full function, class, or file, you **must** begin the code block with a comment explaining *why* the full block is necessary.
+Before presenting the code, you **must** provide a brief, one-sentence justification in your response narrative explaining *why* the full block is necessary. **Do not** add this justification as a comment inside the code.
 
-**Example for Major Changes:**
+**Example for Major Changes (in the Assistant's response):**
 
-File: `backend/app/api/auth.py`
+"I am providing the entire `list_prompts` function because its logic has been refactored to use a new service layer, making a patch-style edit confusing.
 
+File: `backend/app/api/prompts.py`
 ```python
-# Note: Providing the full function as the authentication flow and error handling logic have been substantially refactored.
-@router.post("/token")
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    # ... entire new function code ...
-    if not user or not pwd_context.verify(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+@router.get("", response_model=List[Prompt])
+async def list_prompts():
+    """
+    Retrieves all prompts from the default workspace using the workspace service.
+    This logic is centralized for consistency.
+    """
+    workspace = await get_default_workspace_from_service()
+    prompts = await get_prompts_for_workspace(workspace.id)
+    return prompts
 ```
 
 ---
