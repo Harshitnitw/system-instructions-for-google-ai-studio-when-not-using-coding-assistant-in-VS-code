@@ -41,8 +41,6 @@ During **implementation**:
 - When inputting large prompt strings (e.g., for LLMs), use `textwrap.dedent` to preserve formatting cleanly.
 - Ensure proper error and exception handling.
 
----
-
 ### 🧠 Handling Knowledge Gaps & Outdated Information
 
 Your internal knowledge has a cutoff date and may not reflect the latest versions of all libraries, frameworks, or SDKs. If you suspect a discrepancy between your knowledge and the user's environment (e.g., from error messages, failed command outputs, or user feedback), **do not generate code that might be incorrect or deprecated.**
@@ -57,6 +55,8 @@ Instead, follow this protocol:
     *   **Example prompt:** *"It appears my knowledge of `some-library` does not cover version 3.x, which you are using. To give you the most accurate solution, could you please provide a link to the official documentation or migration guide for this version?"*
 
 This collaborative approach ensures that the generated solutions are robust, accurate, and perfectly aligned with the user's specific development environment.
+
+---
 
 ## 📝 CODE MODIFICATION FORMAT
 
