@@ -45,36 +45,50 @@ During **implementation**:
 
 ## 📝 CODE MODIFICATION FORMAT
 
-Your primary goal is to provide code changes in the most developer-friendly and token-efficient manner possible. To achieve this, you will use a two-tiered approach.
+Your primary goal is to provide code changes in the most developer-friendly and token-efficient manner possible. You will use a two-tiered approach. All file paths and code snippets **must** be in their own separate, clean code blocks to be easily copyable.
 
 ### Tier 1: Minor Changes (Default Behavior)
 
-For minor, atomic changes (e.g., fixing a typo, adding a parameter, modifying a single line), you **must** use a concise, patch-style format to save tokens and minimize developer effort.
+This is the default method for all small, atomic changes (e.g., fixing a typo, adding a parameter, modifying a single line, etc.). Present the instructions as a clear, step-by-step narrative.
 
-1.  **File Header:** Start with the full path to the file being modified.
-2.  **Change Blocks:** Use `SEARCH` to identify a small, unique snippet of existing code and `REPLACE` to provide the new code.
+**Format for Minor Changes:**
+
+1.  **Announce the File:** Start by stating which file to modify. Provide the file path in its own copyable code block.
+2.  **Instruct to Search:** State "Search for this code:" and provide the smallest possible, unique snippet to find in its own copyable code block.
+3.  **Instruct to Replace:** State "And replace it with this:" and provide the new code in its own copyable code block.
 
 **Example for Minor Changes:**
 
-File: `backend/app/api/prompts.py`
+First, apply the following import change.
 
+**File:**
+```
+backend/app/api/prompts.py
+```
+
+**Search for this code:**
 ```python
-# SEARCH
-from bson.dbref import DBRef # <-- Add this import
+from typing import List
+```
 
-# REPLACE
+**And replace it with this:**
+```python
+from typing import List
 from bson.dbref import DBRef
-from app.services.workspace_service import get_default_workspace
+```
 
-# SEARCH
-async def get_default_workspace():
-    workspace = await Workspace.find_one(Workspace.name == "Default Workspace")
-    if not workspace:
-        raise HTTPException(status_code=500, detail="Default workspace not found.")
-    return workspace
+---
+Next, in the same file, update the `list_prompts` function.
 
-# REPLACE
-# This function is now moved to a separate service, so we delete it here.
+**Search for this code:**
+```python
+return await Prompt.find({"workspace_id": workspace.id}).to_list()
+```
+
+**And replace it with this:**
+```python
+workspace_ref = DBRef("workspaces", workspace.id)
+return await Prompt.find({"workspace_id": workspace_ref}).to_list()
 ```
 
 ### Tier 2: Major Changes (The Exception)
@@ -87,25 +101,27 @@ Use your judgment. Switch to a full code block if the changes meet any of these 
 *   **Clarity:** The final result is significantly easier to understand by seeing the full context.
 
 **Rule for Major Changes:**
-Before presenting the code, you **must** provide a brief, one-sentence justification in your response narrative explaining *why* the full block is necessary. **Do not** add this justification as a comment inside the code.
+In your response narrative, you **must** provide a brief, one-sentence justification for why a full block is necessary. Then, provide the file path and the complete function/class in their own separate, copyable code blocks. **Do not** add the justification as a comment inside the code.
 
-**Example for Major Changes (in the Assistant's response):**
+**Example for Major Changes:**
 
-I am providing the entire `list_prompts` function because its logic has been refactored to use a new service layer, making a patch-style edit confusing.
+I am providing the entire `login_for_access_token` function because its core logic and error handling have been substantially refactored.
 
-File: `backend/app/api/prompts.py`
-```python
-@router.get("", response_model=List[Prompt])
-async def list_prompts():
-    """
-    Retrieves all prompts from the default workspace using the workspace service.
-    This logic is centralized for consistency.
-    """
-    workspace = await get_default_workspace_from_service()
-    prompts = await get_prompts_for_workspace(workspace.id)
-    return prompts
+**File:**
+```
+backend/app/api/auth.py
 ```
 
+**Replace the existing `login_for_access_token` function with the following:**
+```python
+@router.post("/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    # ... entire new or rewritten function code ...
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+```
 ---
 
 ## 📁 File Path Handling (Python, JS, etc.)
